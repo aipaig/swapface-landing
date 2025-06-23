@@ -1,0 +1,108 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giới thiệu SwapFace</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <!-- Header -->
+  <header class="bg-blue-600 text-white py-6 text-center">
+    <h1 class="text-4xl font-bold">SwapFace</h1>
+    <p class="mt-2 text-lg">Công cụ đổi mặt video AI, chạy cục bộ trên Windows!</p>
+    <a href="#buy" class="mt-4 inline-block bg-yellow-400 text-black px-6 py-3 rounded-lg font-semibold hover:bg-yellow-500">Mua Key Ngay</a>
+  </header>
+
+  <!-- Giới thiệu -->
+  <section class="py-12 px-4 max-w-6xl mx-auto">
+    <h2 class="text-3xl font-bold mb-6 text-center">Tại sao chọn SwapFace?</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white p-6 rounded-lg shadow">
+        <h3 class="text-xl font-semibold">Đổi mặt mượt mà</h3>
+        <p class="mt-2 text-gray-600">AI tiên tiến, kết quả tự nhiên với video chất lượng cao.</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow">
+        <h3 class="text-xl font-semibold">Chạy cục bộ</h3>
+        <p class="mt-2 text-gray-600">Không cần server, xử lý trực tiếp trên máy của bạn.</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow">
+        <h3 class="text-xl font-semibold">Hiệu suất cao</h3>
+        <p class="mt-2 text-gray-600">Tối ưu cho VGA 12GB và Windows.</p>
+      </div>
+    </div>
+    <div class="mt-8 bg-gray-200 p-6 rounded-lg">
+      <h3 class="text-lg font-semibold">Yêu cầu hệ thống</h3>
+      <ul class="list-disc list-inside text-gray-600">
+        <li>Hệ điều hành: Windows 10/11 (64-bit)</li>
+        <li>Card đồ họa: VGA 12GB trở lên</li>
+        <li>Dung lượng trống: >10GB</li>
+        <li>RAM: 16GB trở lên (khuyến nghị)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Video hướng dẫn -->
+  <section class="bg-gray-200 py-12 px-4 text-center">
+    <h2 class="text-3xl font-bold mb-6">Hướng dẫn sử dụng</h2>
+    <p class="mb-4">Xem video để biết cách cài đặt và đổi mặt với SwapFace.</p>
+    <div class="max-w-4xl mx-auto">
+      <iframe class="w-full h-64 md:h-96" src="https://www.youtube.com/embed/[YOUR_VIDEO_ID]" frameborder="0" allowfullscreen></iframe>
+    </div>
+  </section>
+
+  <!-- Mua key -->
+  <section id="buy" class="py-12 px-4 max-w-6xl mx-auto text-center">
+    <h2 class="text-3xl font-bold mb-6">Nhận Key Kích Hoạt</h2>
+    <p class="text-lg mb-4">Điền thông tin qua Google Form và thanh toán để nhận key tự động! Giá: [200.000 VNĐ]</p>
+    <a href="[YOUR_GOOGLE_FORM_LINK]" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700">Đăng Ký Mua Key</a>
+    <p class="mt-4">Tải bản trial (>10GB): <a href="[YOUR_APP_LINK]" class="text-blue-600 underline">Tại đây</a></p>
+    <p class="mt-2 text-sm text-gray-600">Lưu ý: Đảm bảo kết nối Internet ổn định để tải file lớn.</p>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-6 text-center">
+    <p>Liên hệ: <a href="mailto:[YOUR_EMAIL]" class="underline">[YOUR_EMAIL]</a> | Zalo: [YOUR_ZALO]</p>
+    <p class="mt-2">© 2025 SwapFace. All rights reserved.</p>
+  </footer>
+</body>
+</html>
